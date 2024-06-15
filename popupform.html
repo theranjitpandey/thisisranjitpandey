@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automatic Pop-up Form with OTP</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        /* The Modal (background) */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgb(0,0,0);
+            background-color: rgba(0,0,0,0.4);
+            padding-top: 60px;
+        }
+
+        /* Modal Content/Box */
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+        }
+
+        /* The Close Button */
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: not-allowed; /* Prevents the close button from being clickable */
+        }
+
+        /* Form styling */
+        input[type=text], input[type=email], input[type=tel], input[type=number] {
+            width: 100%;
+            padding: 12px 20px;
+            margin: 8px 0;
+            display: inline-block;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 14px 20px;
+            margin: 8px 0;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        button:hover {
+            opacity: 0.8;
+        }
+
+        #otpSection {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<!-- The Modal -->
+<div id="myModal" class="modal">
+
+  <!-- Modal content -->
+  <div class="modal-content">
+    <form id="popupForm">
+        <label for="name">Name</label>
+        <input type="text" id="name" name="name" placeholder="Your name.." required>
+
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" placeholder="Your email.." required>
+
+        <label for="phone">Phone Number</label>
+        <input type="tel" id="phone" name="phone" placeholder="Your phone number.." required>
+
+        <div id="otpSection">
+            <label for="otp">OTP</label>
+            <input type="number" id="otp" name="otp" placeholder="Enter OTP" required>
+        </div>
+
+        <button type="button" id="getOtpBtn">Get OTP</button>
+        <button type="submit" id="submitBtn" style="display:none;">Submit</button>
+    </form>
+  </div>
+
+</div>
+
+<script>
+    // Get the modal
+    var modal = document.getElementById("myModal");
+
+    // Display the modal automatically when the page loads
+    window.onload = function() {
+        modal.style.display = "block";
+    }
+
+    // Variables to store the OTP and track if it is verified
+    var generatedOtp = "";
+    var otpVerified = false;
+
+    // OTP generation and form validation
+    document.getElementById("getOtpBtn").onclick = function() {
+        var name = document.getElementById("name").value;
+        var email = document.getElementById("email").value;
+        var phone = document.getElementById("phone").value;
+
+        if (name && email && phone) {
+            // Generate a 6-digit OTP
+            generatedOtp = Math.floor(100000 + Math.random() * 900000).toString();
+            alert("Your OTP is: " + generatedOtp); // In a real-world application, send this OTP to the user's phone
+
+            // Show OTP input field and submit button, hide get OTP button
+            document.getElementById("otpSection").style.display = "block";
+            document.getElementById("getOtpBtn").style.display = "none";
+            document.getElementById("submitBtn").style.display = "block";
+        } else {
+            alert("Please fill out all fields before requesting an OTP.");
+        }
+    }
+
+    // Form submission and OTP verification
+    document.getElementById("popupForm").onsubmit = function(event) {
+        event.preventDefault(); // Prevent the form from submitting
+
+        var otp = document.getElementById("otp").value;
+
+        if (otp === generatedOtp) {
+            otpVerified = true;
+        } else {
+            alert("Incorrect OTP. Please try again.");
+        }
+
+        if (otpVerified) {
+            modal.style.display = "none"; // Close the modal if form is valid
+        }
+    }
+
+    // Disable clicking outside the modal to close it
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            alert("Please fill out the form before closing.");
+        }
+    }
+</script>
+
+</body>
+</html>
